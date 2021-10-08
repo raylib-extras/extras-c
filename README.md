@@ -1,2 +1,35 @@
 # extras-c
-Useful components for raylib using the C programming language
+<img align="left" src="https://github.com/raysan5/raylib/raw/master/logo/raylib_logo_animation.gif" width="64">
+Useful comonents for use the [Raylib](https://www.raylib.com/) library (C language version). 
+
+Note that the C versions of any extra can be used in C++ without issue.
+
+# Building
+raylib-extras is setup to use premake to generate static libraries and examples for Visual Studio 2019. Premake can also be used to generate makefiles for linux. Each of the extras can be used as a static library, or by direclty including the files into your game project.
+
+If you wish to use premake, you will need to download the Premake5 executable for your platform from. https://premake.github.io/download
+
+# Components
+raylib-extras is broken up into modular components. Most components are designed to be used standalone.
+
+## Cameras
+There are 3 different camera controllers provided in raylib-extras. Each one is intended to show an example of a different way to move the camera around a scene.
+
+### rlFPCamera
+This is a first person camera. It uses the traditional mouse and WASD keys for movement. It provides position and view angle data back to the calling application.
+See cameras/rlFPCamera/samples/example.c for a simple use case.
+
+### rlTPCamera
+TODO
+
+### rlFreeCamera
+TODO
+
+
+# Other langauges
+raylib-extras is broken up into seperate repositories per language.
+
+ * C and C++ https://github.com/raylib-extras/extras-c 
+ * C++ https://github.com/raylib-extras/extras-cpp
+ * C# https://github.com/raylib-extras/extras-cs
+
