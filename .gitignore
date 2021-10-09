@@ -369,3 +369,9 @@ MigrationBackup/
 /examples/rlFPCamera_sample.vcxproj
 /examples/rlFPCamera_sample.vcxproj.filters
 /extras.sln
+/build/rlTPCamera.vcxproj
+/build/rlTPCamera.vcxproj.filters
+/cameras/rlFPCamera/samples/rlFPCamera_sample.vcxproj
+/cameras/rlFPCamera/samples/rlFPCamera_sample.vcxproj.filters
+/cameras/rlTPCamera/samples/rlTPCamera_sample.vcxproj
+/cameras/rlTPCamera/samples/rlTPCamera_sample.vcxproj.filters

@@ -1,6 +1,6 @@
 /*******************************************************************************************
 *
-*   raylib [core] example - Third Person Orbit Camera Example
+*   raylib [core] example - First Person Orbit Camera Example
 *
 *   Welcome to raylib!
 *
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 	{
 		rlFPCameraUpdate(&cam);
 		BeginDrawing();
-		ClearBackground(WHITE);
+		ClearBackground(SKYBLUE);
 
 		rlFPCameraBeginMode3D(&cam);
 

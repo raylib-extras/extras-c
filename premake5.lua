@@ -51,7 +51,7 @@ project "raylib"
 	files {"raylib/src/*.h", "raylib/src/*.c"}
 	
 	defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
-		
+
 project "rlFPCamera"
 	kind "StaticLib"
 	
@@ -59,7 +59,7 @@ project "rlFPCamera"
 	language "C"
 	targetdir "bin/%{cfg.buildcfg}"
 	
-	includedirs { "raylib/src","rlImGui", "imGui"}
+	includedirs { "raylib/src"}
 	vpaths 
 	{
 		["Header Files"] = { "cameras/rlFPCamera/*.h"},
@@ -67,11 +67,25 @@ project "rlFPCamera"
 	}
 	files {"cameras/rlFPCamera/*.c","cameras/rlFPCamera/*.h"}
 
+project "rlTPCamera"
+	kind "StaticLib"
+	
+	location "build"
+	language "C"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	includedirs { "raylib/src"}
+	vpaths 
+	{
+		["Header Files"] = { "cameras/rlTPCamera/*.h"},
+		["Source Files"] = {"cameras/rlTPCamera/*.c"},
+	}
+	files {"cameras/rlTPCamera/*.c","cameras/rlTPCamera/*.h"}
 
 group "Examples"
 project "rlFPCamera_sample"
 	kind "ConsoleApp"
-	location "examples"
+	location "cameras/rlFPCamera/samples"
 	language "C"
 	targetdir "bin/%{cfg.buildcfg}"
 	
@@ -89,3 +103,25 @@ project "rlFPCamera_sample"
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
+		
+project "rlTPCamera_sample"
+	kind "ConsoleApp"
+	location "cameras/rlTPCamera/samples"
+	language "C"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	vpaths 
+	{
+		["Header Files"] = { "cameras/rlTPCamera/samples/*.h"},
+		["Source Files"] = {"cameras/rlTPCamera/samples/*.c" },
+	}
+	files {"cameras/rlTPCamera/samples/*.c"}
+
+	links {"raylib", "rlTPCamera"}
+	
+	includedirs {"raylib/src", "cameras/rlTPCamera" }
+	
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
+
