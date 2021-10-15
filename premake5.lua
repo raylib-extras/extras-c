@@ -35,6 +35,9 @@ project "raylib"
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
+		
+	filter "action:gmake*"
+		links {"pthread", "GL", "m", "dl", "rt", "X11"}
 				
 	filter{}
 	
@@ -104,6 +107,11 @@ project "rlFPCamera_sample"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
 		
+	filter "action:gmake*"
+		links {"pthread", "GL", "m", "dl", "rt", "X11"}
+				
+	filter{}
+	
 project "rlTPCamera_sample"
 	kind "ConsoleApp"
 	location "cameras/rlTPCamera/samples"
@@ -124,4 +132,8 @@ project "rlTPCamera_sample"
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
-
+		
+	filter "action:gmake*"
+		links {"pthread", "GL", "m", "dl", "rt", "X11"}
+				
+	filter{}
