@@ -139,7 +139,10 @@ RLAPI void rlFPCameraUseMouse(rlFPCamera* camera, bool useMouse);
 RLAPI Vector3 rlFPCameraGetPosition(rlFPCamera* camera);
 
 // Set the camera's position in world (or game) space
-RLAPI void rlFPCameraSetFPPosition(rlFPCamera* camera, Vector3 pos);
+RLAPI void rlFPCameraSetPosition(rlFPCamera* camera, Vector3 pos);
+
+// returns the ray from the camera through the center of the view
+RLAPI Ray rlFPCameraGetViewRay(rlFPCamera* camera);
 
 // update the camera for the current frame
 RLAPI void rlFPCameraUpdate(rlFPCamera* camera);

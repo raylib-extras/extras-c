@@ -118,6 +118,16 @@ Vector3 rlTPCameraGetPosition(rlTPCamera* camera)
     return camera->CameraPosition;
 }
 
+void rlTPCameraSetPosition(rlTPCamera* camera, Vector3 position)
+{
+    camera->CameraPosition = position;
+}
+
+RLAPI Ray rlTPCameraGetViewRay(rlTPCamera* camera)
+{
+    return (Ray) {camera->ViewCamera.position, Vector3Subtract(camera->ViewCamera.target, camera->ViewCamera.position)};
+}
+
 static float GetSpeedForAxis(rlTPCamera* camera, rlTPCameraControls axis, float speed)
 {
     if (camera == NULL)

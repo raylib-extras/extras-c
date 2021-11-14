@@ -120,6 +120,12 @@ RLAPI void rlTPCameraUseMouse(rlTPCamera* camera, bool useMouse, int button);
 // Get the camera's position in world (or game) space
 RLAPI Vector3 rlTPCameraGetPosition(rlTPCamera* camera);
 
+// Set the camera's position in world (or game) space
+RLAPI void rlTPCameraSetPosition(rlTPCamera* camera, Vector3 position);
+
+// returns the ray from the camera through the center of the view
+RLAPI Ray rlTPCameraGetViewRay(rlTPCamera* camera);
+
 // update the camera for the current frame
 RLAPI void rlTPCameraUpdate(rlTPCamera* camera);
 

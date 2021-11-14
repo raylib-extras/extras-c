@@ -130,6 +130,11 @@ void rlFPCameraSetPosition(rlFPCamera* camera, Vector3 pos)
     camera->ViewCamera.target = Vector3Add(camera->CameraPosition, forward);
 }
 
+RLAPI Ray rlFPCameraGetViewRay(rlFPCamera* camera)
+{
+    return (Ray) { camera->CameraPosition, camera->Forward };
+}
+
 static float GetSpeedForAxis(rlFPCamera* camera, rlFPCameraControls axis, float speed)
 {
     if (camera == NULL)
