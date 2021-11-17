@@ -53,6 +53,9 @@ int main(int argc, char* argv[])
 	// Main game loop
 	while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
+		if (IsKeyPressed(KEY_F1))
+			cam.AllowFlight = !cam.AllowFlight;
+
 		rlFPCameraUpdate(&cam);
 		BeginDrawing();
 		ClearBackground(SKYBLUE);
@@ -83,6 +86,10 @@ int main(int argc, char* argv[])
 
 		rlFPCameraEndMode3D();
 
+		if (cam.AllowFlight)
+			DrawText("(F1) Flight", 2, 20, 20, BLACK);
+		else
+			DrawText("(F1) Running", 2, 20, 20, BLACK);
 		// instructions
 		DrawFPS(0, 0);
 		EndDrawing();

@@ -114,6 +114,8 @@ typedef struct
     // state for window focus
     bool Focused;
 
+    bool AllowFlight;
+
     // raylib camera for use with raylib modes.
     Camera3D ViewCamera;
 

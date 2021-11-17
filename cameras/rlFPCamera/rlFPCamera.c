@@ -83,6 +83,8 @@ void rlFPCameraInit(rlFPCamera* camera, float fovY, Vector3 position)
     camera->ViewCamera.fovy = fovY;
     camera->ViewCamera.projection = CAMERA_PERSPECTIVE;
 
+    camera->AllowFlight = false;
+
     camera->NearPlane = 0.01;
     camera->FarPlane = 1000.0;
 
@@ -215,7 +217,10 @@ void rlFPCameraUpdate(rlFPCamera* camera)
     // Recalculate camera target considering translation and rotation
     Vector3 target = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { camera->ViewAngles.y, -camera->ViewAngles.x, 0 }));
 
-    camera->Forward = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { 0, -camera->ViewAngles.x, 0 }));
+    if (camera->AllowFlight)
+        camera->Forward = target;
+    else
+        camera->Forward = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { 0, -camera->ViewAngles.x, 0 }));
 
     camera->Right = (Vector3){ camera->Forward.z * -1.0f, 0, camera->Forward.x };
 
