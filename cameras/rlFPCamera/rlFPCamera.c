@@ -66,7 +66,6 @@ void rlFPCameraInit(rlFPCamera* camera, float fovY, Vector3 position)
     camera->ViewBobbleWaverMagnitude = 0.002f;
     camera->CurrentBobble = 0;
 
-    camera->PreviousMousePosition = GetMousePosition();
     camera->Focused = IsWindowFocused();
 
     camera->TargetDistance = 1;
@@ -167,7 +166,6 @@ void rlFPCameraUpdate(rlFPCamera* camera)
         if (camera->Focused)
         {
             DisableCursor();
-            camera->PreviousMousePosition = GetMousePosition(); // so there is no jump on focus
         }
         else
         {
@@ -176,8 +174,7 @@ void rlFPCameraUpdate(rlFPCamera* camera)
     }
 
     // Mouse movement detection
-    Vector2 mousePositionDelta = (Vector2){ 0.0f, 0.0f };
-    Vector2 mousePosition = GetMousePosition();
+    Vector2 mousePositionDelta = GetMouseDelta();
 
     // Keys input detection
     float direction[MOVE_DOWN + 1] = { GetSpeedForAxis(camera,MOVE_FRONT,camera->MoveSpeed.z),
@@ -186,11 +183,6 @@ void rlFPCameraUpdate(rlFPCamera* camera)
                                       GetSpeedForAxis(camera,MOVE_LEFT,camera->MoveSpeed.x),
                                       GetSpeedForAxis(camera,MOVE_UP,camera->MoveSpeed.y),
                                       GetSpeedForAxis(camera,MOVE_DOWN,camera->MoveSpeed.y) };
-
-    mousePositionDelta.x = mousePosition.x - camera->PreviousMousePosition.x;
-    mousePositionDelta.y = mousePosition.y - camera->PreviousMousePosition.y;
-
-    camera->PreviousMousePosition = mousePosition;
 
 
     // let someone modify the projected position

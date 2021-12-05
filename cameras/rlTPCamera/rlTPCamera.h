@@ -96,9 +96,6 @@ typedef struct
     // the field of view in X and Y
     Vector2 FOV;
 
-    // state for mouse movement
-    Vector2 PreviousMousePosition;
-
     // state for view angles
     Vector2 ViewAngles;
 

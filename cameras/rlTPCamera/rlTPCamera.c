@@ -74,7 +74,6 @@ void rlTPCameraInit(rlTPCamera* camera, float fovY, Vector3 position)
     camera->MinimumViewY = 1.0f;
     camera->MaximumViewY = 89.0f;
 
-    camera->PreviousMousePosition = GetMousePosition();
     camera->Focused = IsWindowFocused();
 
     camera->CameraPullbackDistance = 5;
@@ -163,7 +162,6 @@ void rlTPCameraUpdate(rlTPCamera* camera)
         if (camera->Focused)
         {
             DisableCursor();
-            camera->PreviousMousePosition = GetMousePosition(); // so there is no jump on focus
         }
         else
         {
@@ -172,8 +170,7 @@ void rlTPCameraUpdate(rlTPCamera* camera)
     }
 
     // Mouse movement detection
-    Vector2 mousePositionDelta = { 0.0f, 0.0f };
-    Vector2 mousePosition = GetMousePosition();
+    Vector2 mousePositionDelta = GetMouseDelta();
     float mouseWheelMove = GetMouseWheelMove();
 
     // Keys input detection
@@ -183,11 +180,6 @@ void rlTPCameraUpdate(rlTPCamera* camera)
                                       GetSpeedForAxis(camera,MOVE_LEFT,camera->MoveSpeed.x),
                                       GetSpeedForAxis(camera,MOVE_UP,camera->MoveSpeed.y),
                                       GetSpeedForAxis(camera,MOVE_DOWN,camera->MoveSpeed.y) };
-
-    mousePositionDelta.x = mousePosition.x - camera->PreviousMousePosition.x;
-    mousePositionDelta.y = mousePosition.y - camera->PreviousMousePosition.y;
-
-    camera->PreviousMousePosition = mousePosition;
 
     bool useMouse = camera->UseMouse && (camera->UseMouseButton < 0 || IsMouseButtonDown(camera->UseMouseButton));
 
