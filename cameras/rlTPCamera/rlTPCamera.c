@@ -262,7 +262,7 @@ static void SetupCamera(rlTPCamera* camera, float aspect)
 
     // Setup Camera view
     Matrix matView = MatrixLookAt(camera->ViewCamera.position, camera->ViewCamera.target, camera->ViewCamera.up);
-    rlMultMatrixf(MatrixToFloat(matView));      // Multiply modelview matrix by view matrix (camera)
+    rlMultMatrixf(MatrixToFloatV(matView).v);      // Multiply modelview matrix by view matrix (camera)
 
     rlEnableDepthTest();                // Enable DEPTH_TEST for 3D
 }
