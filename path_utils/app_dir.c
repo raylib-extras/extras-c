@@ -85,7 +85,7 @@ const char* rlGetApplicationBasePath()
             FreeLibrary(lib);
         }
 #elif defined(__linux__)
-        uint32_t size = sizeof(appDir);
+        unsigned int size = sizeof(appDir);
 
         ssize_t len = readlink("/proc/self/exe", appDir, size);
         if (len > 0)
