@@ -28,9 +28,31 @@
 *
 **********************************************************************************************/
 
-#if defined(_WIN32)
+#include <stdlib.h>
+#include <stdbool.h>
 
-#include <windows.h>
+#if defined(_WIN32)
+#ifndef MAX_PATH
+#define MAX_PATH 1025
+#endif
+
+
+void* LoadLibraryA(void* lpLibFileName);
+void* LoadLibraryW(void* lpLibFileName);
+
+#ifdef UNICODE
+#define LoadLibrary  LoadLibraryW
+#else
+#define LoadLibrary  LoadLibraryA
+#endif // !UNICODE
+
+void* GetProcAddress(void* hModule, void* lpProcName);
+
+void* GetCurrentProcess(void);
+bool FreeLibrary(void* hLibModule);
+
+int  WideCharToMultiByte(unsigned int cp, unsigned long flags, const unsigned short* widestr, int cchwide, char* str, int cbmb, const char* defchar, int* used_default);
+
 const char PathDelim = '\\';
 
 #elif defined(__linux__)
@@ -52,16 +74,20 @@ const char* rlGetApplicationBasePath()
         appDir[0] = '/' ; // default for everyone to start out with
 
 #if defined(_WIN32)
-        typedef DWORD(WINAPI* GetModuleFileNameFunc)(HANDLE, HMODULE, LPSTR, DWORD);
+        typedef unsigned long(*GetModuleFileNameFunc)(void*, void*, void*, unsigned long);
         GetModuleFileNameFunc getModuleFileNameExWPtr = NULL;
-        HMODULE lib = LoadLibrary(L"psapi.dll");
+        void* lib = LoadLibrary(L"psapi.dll");
         if (lib == NULL)
         {
             appDir[0] = '\\';
         }
         else
         {
-            getModuleFileNameExWPtr = (GetModuleFileNameFunc)GetProcAddress(lib, "GetModuleFileNameExA");
+#if defined (UNICODE)
+			getModuleFileNameExWPtr = (GetModuleFileNameFunc)GetProcAddress(lib, "GetModuleFileNameExW");
+#else
+			getModuleFileNameExWPtr = (GetModuleFileNameFunc)GetProcAddress(lib, "GetModuleFileNameExA");
+#endif
 
             if (getModuleFileNameExWPtr == NULL)
             {
@@ -69,7 +95,15 @@ const char* rlGetApplicationBasePath()
             }
             else
             {
-                int len = getModuleFileNameExWPtr(GetCurrentProcess(), NULL, appDir, MAX_PATH);
+                int len = 0;
+#if defined (UNICODE)
+				unsigned short widePath[MAX_PATH];
+				len = getModuleFileNameExWPtr(GetCurrentProcess(), NULL, widePath, MAX_PATH);
+
+                len = WideCharToMultiByte(0, 0, widePath, len, appDir, MAX_PATH, NULL, NULL);
+#else
+				len = getModuleFileNameExWPtr(GetCurrentProcess(), NULL, appDir, MAX_PATH);
+#endif
                 if (len > 0)
                 {
                     for (int i = len; i >= 0; --i)
