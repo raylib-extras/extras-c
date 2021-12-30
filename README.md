@@ -12,6 +12,12 @@ If you wish to use premake, you will need to download the Premake5 executable fo
 # Components
 raylib-extras is broken up into modular components. Most components are designed to be used standalone.
 
+## path_utils
+Utilities to help manage paths with raylib and other games.
+
+### application_dir
+A single function to locate the folder/directory that the running executable is in. Used to set your working directory for future raylib resource loads.
+
 ## Cameras
 There are 3 different camera controllers provided in raylib-extras. Each one is intended to show an example of a different way to move the camera around a scene.
 

@@ -84,6 +84,20 @@ project "rlTPCamera"
 		["Source Files"] = {"cameras/rlTPCamera/*.c"},
 	}
 	files {"cameras/rlTPCamera/*.c","cameras/rlTPCamera/*.h"}
+	
+project "path_utils"
+	kind "StaticLib"
+	
+	location "build"
+	language "C"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	vpaths 
+	{
+		["Header Files"] = { "path_utils/*.h"},
+		["Source Files"] = {"path_utils/*.c"},
+	}
+	files {"path_utils/*.c","path_utils/*.h"}
 
 group "Examples"
 project "rlFPCamera_sample"
@@ -128,6 +142,32 @@ project "rlTPCamera_sample"
 	links {"raylib", "rlTPCamera"}
 	
 	includedirs {"raylib/src", "cameras/rlTPCamera" }
+	
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
+		
+	filter "action:gmake*"
+		links {"pthread", "GL", "m", "dl", "rt", "X11"}
+				
+	filter{}
+	
+project "application_dir_sample"
+	kind "ConsoleApp"
+	location "path_utils/samples"
+	language "C"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	vpaths 
+	{
+		["Header Files"] = { "path_utils/samples/application_dir/*.h"},
+		["Source Files"] = {"path_utils/samples/application_dir/*.c" },
+	}
+	files {"path_utils/samples/application_dir/*.c"}
+
+	links {"raylib", "path_utils"}
+	
+	includedirs {"raylib/src", "path_utils" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
