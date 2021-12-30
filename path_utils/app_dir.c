@@ -139,7 +139,7 @@ const char* rlGetApplicationBasePath()
 
         if (_NSGetExecutablePath(appDir, &size) == 0)
         {
-            int len = strlne(appDir);
+            int len = strlen(appDir);
             for (int i = len; i >= 0; --i)
             {
                 if (appDir[i] == '/')
