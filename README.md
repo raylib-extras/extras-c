@@ -12,6 +12,9 @@ If you wish to use premake, you will need to download the Premake5 executable fo
 # Components
 raylib-extras is broken up into modular components. Most components are designed to be used standalone.
 
+## ray_collision_2d.h
+A single file header with utillities to help detect collisions between 2d rays and various shapes.
+
 ## path_utils
 Utilities to help manage paths with raylib and other games.
 
