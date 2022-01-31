@@ -39,19 +39,19 @@ extern "C"
 	{
 		float minParam = -INFINITY, maxParam = INFINITY;
 
-		if (direction.x != 0.0)
+		if (ray.Direction.x != 0.0)
 		{
-			float txMin = (rect.x - origin.x) / direction.x;
-			float txMax = ((rect.x + rect.width) - origin.x) / direction.x;
+			float txMin = (rect.x - ray.Origin.x) / ray.Direction.x;
+			float txMax = ((rect.x + rect.width) - ray.Origin.x) / ray.Direction.x;
 
 			minParam = max(minParam, min(txMin, txMax));
 			maxParam = min(maxParam, max(txMin, txMax));
 		}
 
-		if (direction.y != 0.0)
+		if (ray.Direction.y != 0.0)
 		{
-			float tyMin = (rect.y - origin.y) / direction.y;
-			float tyMax = ((rect.y + rect.height) - origin.y) / direction.y;
+			float tyMin = (rect.y - ray.Origin.y) / ray.Direction.y;
+			float tyMax = ((rect.y + rect.height) - ray.Origin.y) / ray.Direction.y;
 
 			minParam = max(minParam, min(tyMin, tyMax));
 			maxParam = min(maxParam, max(tyMin, tyMax));
@@ -71,7 +71,7 @@ extern "C"
 
 		if (intersection != NULL)
 		{
-			*intersection = Vector2Add(origin, Vector2Scale(direction, minParam));
+			*intersection = Vector2Add(ray.Origin, Vector2Scale(ray.Direction, minParam));
 		}
 		return true;
 	}
