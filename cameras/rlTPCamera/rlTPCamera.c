@@ -71,8 +71,8 @@ void rlTPCameraInit(rlTPCamera* camera, float fovY, Vector3 position)
 
     camera->MouseSensitivity = 600;
 
-    camera->MinimumViewY = 1.0f;
-    camera->MaximumViewY = 89.0f;
+    camera->MinimumViewY = -89.0f;
+    camera->MaximumViewY = 0.0f;
 
     camera->Focused = IsWindowFocused();
 
@@ -189,7 +189,7 @@ void rlTPCameraUpdate(rlTPCamera* camera)
     if (turnRotation != 0)
         camera->ViewAngles.x -= turnRotation * DEG2RAD;
     else if (useMouse && camera->Focused)
-        camera->ViewAngles.x -= (mousePositionDelta.x / -camera->MouseSensitivity);
+        camera->ViewAngles.x -= (mousePositionDelta.x / camera->MouseSensitivity);
 
     if (tiltRotation)
         camera->ViewAngles.y += tiltRotation * DEG2RAD;
