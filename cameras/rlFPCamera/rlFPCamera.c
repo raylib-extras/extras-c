@@ -193,12 +193,12 @@ void rlFPCameraUpdate(rlFPCamera* camera)
     if (turnRotation != 0)
         camera->ViewAngles.x -= turnRotation * DEG2RAD;
     else if (camera->UseMouse && camera->Focused)
-        camera->ViewAngles.x += (mousePositionDelta.x / -camera->MouseSensitivity);
+        camera->ViewAngles.x += (mousePositionDelta.x / camera->MouseSensitivity);
 
     if (tiltRotation)
         camera->ViewAngles.y += tiltRotation * DEG2RAD;
     else if (camera->UseMouse && camera->Focused)
-        camera->ViewAngles.y += (mousePositionDelta.y / -camera->MouseSensitivity);
+        camera->ViewAngles.y += (mousePositionDelta.y / camera->MouseSensitivity);
 
     // Angle clamp
     if (camera->ViewAngles.y < camera->MinimumViewY * DEG2RAD)
@@ -207,12 +207,12 @@ void rlFPCameraUpdate(rlFPCamera* camera)
         camera->ViewAngles.y = camera->MaximumViewY * DEG2RAD;
 
     // Recalculate camera target considering translation and rotation
-    Vector3 target = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { camera->ViewAngles.y, -camera->ViewAngles.x, 0 }));
+    Vector3 target = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateZYX((Vector3) { camera->ViewAngles.y, -camera->ViewAngles.x, 0 }));
 
     if (camera->AllowFlight)
         camera->Forward = target;
     else
-        camera->Forward = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { 0, -camera->ViewAngles.x, 0 }));
+        camera->Forward = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateZYX((Vector3) { 0, -camera->ViewAngles.x, 0 }));
 
     camera->Right = (Vector3){ camera->Forward.z * -1.0f, 0, camera->Forward.x };
 
