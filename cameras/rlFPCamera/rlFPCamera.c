@@ -223,7 +223,7 @@ void rlFPCameraUpdate(rlFPCamera* camera)
 
     camera->ViewCamera.position = camera->CameraPosition;
 
-    float eyeOfset = camera->PlayerEyesPosition;
+    float eyeOffset = camera->PlayerEyesPosition;
 
     if (camera->ViewBobbleFreq > 0)
     {
@@ -233,7 +233,7 @@ void rlFPCameraUpdate(rlFPCamera* camera)
 
         static float viewBobbleDampen = 8.0f;
 
-        eyeOfset -= sinf(camera->CurrentBobble / viewBobbleDampen) * camera->ViewBobbleMagnatude;
+        eyeOffset -= sinf(camera->CurrentBobble / viewBobbleDampen) * camera->ViewBobbleMagnatude;
 
         camera->ViewCamera.up.x = sinf(camera->CurrentBobble / (viewBobbleDampen * 2)) * camera->ViewBobbleWaverMagnitude;
         camera->ViewCamera.up.z = -sinf(camera->CurrentBobble / (viewBobbleDampen * 2)) * camera->ViewBobbleWaverMagnitude;
@@ -245,7 +245,7 @@ void rlFPCameraUpdate(rlFPCamera* camera)
         camera->ViewCamera.up.z = 0;
     }
 
-    camera->ViewCamera.position.y += eyeOfset;
+    camera->ViewCamera.position.y += eyeOffset;
 
     camera->ViewCamera.target.x = camera->ViewCamera.position.x + target.x;
     camera->ViewCamera.target.y = camera->ViewCamera.position.y + target.y;
