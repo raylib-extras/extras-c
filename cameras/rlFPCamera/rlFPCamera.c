@@ -57,6 +57,7 @@ void rlFPCameraInit(rlFPCamera* camera, float fovY, Vector3 position)
 
     camera->UseMouse = true;
     camera->MouseSensitivity = 600;
+    camera->InvertY = false;
 
     camera->MinimumViewY = -89.0f;
     camera->MaximumViewY = 89.0f;
@@ -195,10 +196,12 @@ void rlFPCameraUpdate(rlFPCamera* camera)
     else if (camera->UseMouse && camera->Focused)
         camera->ViewAngles.x += (mousePositionDelta.x / camera->MouseSensitivity);
 
+    float yFactor = camera->InvertY ? -1.0f : 1.0f;
+
     if (tiltRotation)
-        camera->ViewAngles.y += tiltRotation * DEG2RAD;
+        camera->ViewAngles.y += yFactor * tiltRotation * DEG2RAD;
     else if (camera->UseMouse && camera->Focused)
-        camera->ViewAngles.y += (mousePositionDelta.y / camera->MouseSensitivity);
+        camera->ViewAngles.y += (yFactor * mousePositionDelta.y / camera->MouseSensitivity);
 
     // Angle clamp
     if (camera->ViewAngles.y < camera->MinimumViewY * DEG2RAD)

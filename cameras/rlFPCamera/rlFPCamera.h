@@ -69,6 +69,8 @@ typedef struct
     // use the mouse for looking?
     bool UseMouse;
 
+    bool InvertY;
+
     // how many pixels equate out to an angle move, larger numbers mean slower, more accurate mouse
     float MouseSensitivity;
 
