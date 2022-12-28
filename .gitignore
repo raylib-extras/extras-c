@@ -375,3 +375,5 @@ MigrationBackup/
 /cameras/rlFPCamera/samples/rlFPCamera_sample.vcxproj.filters
 /cameras/rlTPCamera/samples/rlTPCamera_sample.vcxproj
 /cameras/rlTPCamera/samples/rlTPCamera_sample.vcxproj.filters
+raylib-master
+Catalog

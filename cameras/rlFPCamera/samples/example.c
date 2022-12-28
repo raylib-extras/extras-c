@@ -41,6 +41,16 @@ int main()
     SetTextureFilter(tx, TEXTURE_FILTER_ANISOTROPIC_16X);
     SetTextureWrap(tx, TEXTURE_WRAP_CLAMP);
 
+	Mesh cube = GenMeshCube(1, 1, 1);
+	Material greenMaterial = LoadMaterialDefault();
+	greenMaterial.maps[MATERIAL_MAP_ALBEDO].color = GREEN;
+	greenMaterial.maps[MATERIAL_MAP_ALBEDO].texture = tx;
+
+	Material brownMaterial = LoadMaterialDefault();
+	brownMaterial.maps[MATERIAL_MAP_ALBEDO].color = BROWN;
+	brownMaterial.maps[MATERIAL_MAP_ALBEDO].texture = tx;
+
+
     // setup initial camera data
     rlFPCamera cam;
     rlFPCameraInit(&cam, 45, (Vector3) { 1, 0, 0 });
@@ -70,8 +80,12 @@ int main()
         {
             for (float z = -count * spacing; z <= count * spacing; z += spacing)
             {
-                DrawCubeTexture(tx, (Vector3) { x, 1.5f, z }, 1, 1, 1, GREEN);
-                DrawCubeTexture(tx, (Vector3) { x, 0.5f, z }, 0.25f, 1, 0.25f, BROWN);
+				Matrix transform = MatrixTranslate(x, 1.5f, z);
+				DrawMesh(cube, greenMaterial, transform);
+
+				transform = MatrixTranslate(x, 0.5f, z);
+				transform = MatrixMultiply(MatrixScale(0.25, 1, 0.25), transform);
+				DrawMesh(cube, brownMaterial, transform);
             }
         }
 
@@ -86,7 +100,8 @@ int main()
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
-
+    
+    UnloadMesh(cube);
     // De-Initialization
     //--------------------------------------------------------------------------------------
     CloseWindow();        // Close window and OpenGL context

@@ -37,9 +37,15 @@ int main(int argc, char* argv[])
     Image img = GenImageChecked(256, 256, 64, 64, LIGHTGRAY, WHITE);
     Texture tx = LoadTextureFromImage(img);
 
+	Mesh cube = GenMeshCube(1, 1, 1);
+	Material whiteMaterial = LoadMaterialDefault();
+	whiteMaterial.maps[MATERIAL_MAP_ALBEDO].color = WHITE;
+	whiteMaterial.maps[MATERIAL_MAP_ALBEDO].texture = tx;
+
     // setup initial camera data
     rlTPCamera orbitCam;
     rlTPCameraInit(&orbitCam, 45, (Vector3){ 1, 0 ,0 });
+    orbitCam.ViewAngles.y = -15 * DEG2RAD;
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -60,7 +66,7 @@ int main(int argc, char* argv[])
         {
             for (float z = -count * spacing; z <= count * spacing; z += spacing)
             {
-                DrawCubeTexture(tx, (Vector3){ x, 0.5f, z }, 1, 1, 1, WHITE);
+                DrawMesh(cube, whiteMaterial, MatrixTranslate(x, 0.5f, z));
             }
         }
         
@@ -76,6 +82,8 @@ int main(int argc, char* argv[])
         //----------------------------------------------------------------------------------
     }
 
+    UnloadTexture(tx);
+    UnloadMesh(cube);
     // De-Initialization
     //--------------------------------------------------------------------------------------   
     CloseWindow();        // Close window and OpenGL context
