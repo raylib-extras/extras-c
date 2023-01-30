@@ -188,8 +188,8 @@ void rlFPCameraUpdate(rlFPCamera* camera)
 
     // let someone modify the projected position
     // Camera orientation calculation
-    float turnRotation = GetSpeedForAxis(camera, TURN_RIGHT, camera->TurnSpeed.x) - GetSpeedForAxis(camera, TURN_LEFT, camera->TurnSpeed.x);
-    float tiltRotation = GetSpeedForAxis(camera, TURN_UP, camera->TurnSpeed.y) - GetSpeedForAxis(camera, TURN_DOWN, camera->TurnSpeed.y);
+    float turnRotation = GetSpeedForAxis(camera, TURN_LEFT, camera->TurnSpeed.x) - GetSpeedForAxis(camera, TURN_RIGHT, camera->TurnSpeed.x);
+    float tiltRotation = GetSpeedForAxis(camera, TURN_DOWN, camera->TurnSpeed.y) - GetSpeedForAxis(camera, TURN_UP, camera->TurnSpeed.y);
 
     if (turnRotation != 0)
         camera->ViewAngles.x -= turnRotation * DEG2RAD;
