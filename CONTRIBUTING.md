@@ -10,3 +10,4 @@ Thank you for taking an intrerest in contributing to raylib-extras
  - When possible break your functions up into sub functions, especially if that sub function may be useful on it's own.
 
 # Contributors
+Dor Shapira (sDos280)
