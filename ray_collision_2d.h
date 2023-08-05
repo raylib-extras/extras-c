@@ -4,6 +4,7 @@
 *   2d ray collisions
 *
 *   Copyright (c) 2022 Jeffery Myers
+*   Copyright (c) 2023 Jaedeok Kim
 *
 ********************************************************************************************/
 
@@ -16,6 +17,12 @@
 #include "raymath.h"
 #include "stdlib.h"
 
+// std::max() and std::min() do not exist in C
+#if !defined(__cplusplus)
+#define max fmax
+#define min fmin
+#endif
+
 #if defined(__cplusplus)
 extern "C"
 {
@@ -25,10 +32,11 @@ extern "C"
 	{
 		Vector2 Origin;
 		Vector2 Direction;
-	}Ray2d;
+	} Ray2d;
 
 	bool CheckCollisionRay2dRect(Ray2d ray, Rectangle rect, Vector2* intersection);
 	bool CheckCollisionRay2dCircle(Ray2d ray, Vector2 center, float radius, Vector2* intersection);
+	bool CheckCollisionRay2dPoly(Ray2d ray, Vector2* points, int pointCount, Vector2* intersection);
 
 #ifdef RAY2D_COLLISION_IMPLEMENTATION
 
@@ -106,6 +114,100 @@ extern "C"
 		}
 
 		return false;
+	}
+
+	bool CheckCollisionRay2dPoly(Ray2d ray, Vector2* points, int pointCount, Vector2* intersection) 
+	{
+		if (points == NULL || pointCount < 3) {
+			return false;
+		}
+
+		Vector2 result = { INFINITY, INFINITY };
+
+		float distSq = INFINITY;
+
+		for (int j = pointCount - 1, i = 0; i < pointCount; j = i, i++) {
+			Ray2d edgeRay = { 
+				.Origin = points[i],
+				.Direction = Vector2Subtract(points[j], points[i])
+			};
+
+			float magnitude = -INFINITY;
+
+			// https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282
+			{
+				float rXs = (ray.Direction.x * edgeRay.Direction.y) - (ray.Direction.y * edgeRay.Direction.x); 
+
+				Vector2 qp = Vector2Subtract(edgeRay.Origin, ray.Origin);
+
+				float qpXs = (qp.x * edgeRay.Direction.y) - (qp.y * edgeRay.Direction.x);
+				float qpXr = (qp.x * ray.Direction.y) - (qp.y * ray.Direction.x);
+
+				if (rXs != 0.0f) 
+				{
+					float inverseRxS = 1.0f / rXs;
+
+					float t = qpXs * inverseRxS, u = qpXr * inverseRxS;
+
+					if ((t >= 0.0f && t <= 1.0f) && (u >= 0.0f && u <= 1.0f)) 
+					{
+						magnitude = t;
+					}
+				} 
+				else
+				{
+					if (qpXr == 0.0f) 
+					{
+						float rDr = Vector2DotProduct(ray.Direction, ray.Direction);
+        				float sDr = Vector2DotProduct(edgeRay.Direction, ray.Direction);
+
+						float inverseRdR = 1.0f / rDr;
+
+						float qpDr = Vector2DotProduct(qp, ray.Direction);
+
+						float t0 = qpDr * inverseRdR, t1 = t0 + sDr * inverseRdR;
+
+        				if (sDr < 0.0f)
+						{
+							float tmp = t0;
+							
+							t0 = t1, t1 = tmp;
+						}
+
+						if ((t0 < 0.0f && t1 == 0.0f) || (t0 == 1.0f && t1 > 1.0f)) 
+						{
+							magnitude = (t0 == 1.0f) ? 1.0f : 0.0f;
+						}
+					}
+				}
+			}
+
+			if (magnitude < 0.0f) 
+			{
+				continue;
+			}
+
+			Vector2 nearest = Vector2Add(ray.Origin, Vector2Scale(ray.Direction, magnitude));
+
+			float nearestDistSq = Vector2DistanceSqr(ray.Origin, nearest);
+
+			if (distSq > nearestDistSq) 
+			{
+				result = nearest, distSq = nearestDistSq;
+			}
+		}
+
+		if (distSq == INFINITY) 
+		{
+			return false;
+		}
+
+		if (intersection) 
+		{
+			*intersection = result;
+		}
+
+		return true;
 	}
 
 #endif //RAY2D_COLLISION_IMPLEMENTATION
