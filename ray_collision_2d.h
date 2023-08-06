@@ -16,12 +16,6 @@
 #include "raymath.h"
 #include "stdlib.h"
 
-// `std::max()` and `std::min()` do not exist in C
-#if !defined(__cplusplus)
-#define max fmax
-#define min fmin
-#endif
-
 #if defined(__cplusplus)
 extern "C"
 {
@@ -33,7 +27,7 @@ extern "C"
 		Vector2 Direction;
 	}Ray2d;
 
-	bool CheckCollisionRay2ds(Ray2d ray1, Ray2d ray2, float* length);
+	bool CheckCollisionRay2dRay2d(Ray2d ray1, Ray2d ray2, float* length);
 	bool CheckCollisionRay2dRect(Ray2d ray, Rectangle rect, Vector2* intersection);
 	bool CheckCollisionRay2dCircle(Ray2d ray, Vector2 center, float radius, Vector2* intersection);
 	bool CheckCollisionRay2dPoly(Ray2d ray, Vector2* points, int pointCount, Vector2* intersection);
@@ -42,7 +36,7 @@ extern "C"
 
 	// https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282
 
-	bool CheckCollisionRay2ds(Ray2d ray1, Ray2d ray2, float* length) 
+	bool CheckCollisionRay2dRay2d(Ray2d ray1, Ray2d ray2, float* length) 
 	{
 		float rXs = (ray1.Direction.x * ray2.Direction.y) - (ray1.Direction.y * ray2.Direction.x); 
 
@@ -78,7 +72,7 @@ extern "C"
 
 			float qpDr = Vector2DotProduct(qp, ray1.Direction);
 
-			float t0 = qpDr * inverseRdR, t1 = t0 + (sDr * inverseRdR);
+			float t0 = qpDr * inverseRdR, t1 = t0 + sDr * inverseRdR;
 
 			if (sDr < 0.0f)
 			{
@@ -97,7 +91,8 @@ extern "C"
 				return true;
 			}
 
-			if (t1 >= 0.0f && t0 <= 1.0f) {
+			if (t1 >= 0.0f && t0 <= 1.0f) 
+			{
 				// the rays are collinear and overlapping
 				return false;
 			}
@@ -118,8 +113,8 @@ extern "C"
 			float txMin = (rect.x - ray.Origin.x) / ray.Direction.x;
 			float txMax = ((rect.x + rect.width) - ray.Origin.x) / ray.Direction.x;
 
-			minParam = max(minParam, min(txMin, txMax));
-			maxParam = min(maxParam, max(txMin, txMax));
+			minParam = fmax(minParam, fmin(txMin, txMax));
+			maxParam = fmin(maxParam, fmax(txMin, txMax));
 		}
 
 		if (ray.Direction.y != 0.0)
@@ -127,8 +122,8 @@ extern "C"
 			float tyMin = (rect.y - ray.Origin.y) / ray.Direction.y;
 			float tyMax = ((rect.y + rect.height) - ray.Origin.y) / ray.Direction.y;
 
-			minParam = max(minParam, min(tyMin, tyMax));
-			maxParam = min(maxParam, max(tyMin, tyMax));
+			minParam = fmax(minParam, fmin(tyMin, tyMax));
+			maxParam = fmin(maxParam, fmax(tyMin, tyMax));
 		}
 
 		// if maxParam < 0, ray is intersecting AABB, but the whole AABB is behind us
@@ -203,7 +198,7 @@ extern "C"
 
 			float length = -INFINITY;
 
-			bool intersect = CheckCollisionRay2ds(ray, edgeRay, &length);
+			bool intersect = CheckCollisionRay2dRay2d(ray, edgeRay, &length);
 
 			Vector2 nearest = Vector2Add(ray.Origin, Vector2Scale(ray.Direction, length));
 
