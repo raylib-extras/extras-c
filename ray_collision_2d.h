@@ -4,7 +4,6 @@
 *   2d ray collisions
 *
 *   Copyright (c) 2022 Jeffery Myers
-*   Copyright (c) 2023 Jaedeok Kim
 *
 ********************************************************************************************/
 
@@ -17,7 +16,7 @@
 #include "raymath.h"
 #include "stdlib.h"
 
-// std::max() and std::min() do not exist in C
+// `std::max()` and `std::min()` do not exist in C
 #if !defined(__cplusplus)
 #define max fmax
 #define min fmin
@@ -32,13 +31,80 @@ extern "C"
 	{
 		Vector2 Origin;
 		Vector2 Direction;
-	} Ray2d;
+	}Ray2d;
 
+	bool CheckCollisionRay2ds(Ray2d ray1, Ray2d ray2, float* length);
 	bool CheckCollisionRay2dRect(Ray2d ray, Rectangle rect, Vector2* intersection);
 	bool CheckCollisionRay2dCircle(Ray2d ray, Vector2 center, float radius, Vector2* intersection);
 	bool CheckCollisionRay2dPoly(Ray2d ray, Vector2* points, int pointCount, Vector2* intersection);
 
 #ifdef RAY2D_COLLISION_IMPLEMENTATION
+
+	// https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282
+
+	bool CheckCollisionRay2ds(Ray2d ray1, Ray2d ray2, float* length) 
+	{
+		float rXs = (ray1.Direction.x * ray2.Direction.y) - (ray1.Direction.y * ray2.Direction.x); 
+
+		Vector2 qp = Vector2Subtract(ray2.Origin, ray1.Origin);
+
+		float qpXs = (qp.x * ray2.Direction.y) - (qp.y * ray2.Direction.x);
+		float qpXr = (qp.x * ray1.Direction.y) - (qp.y * ray1.Direction.x);
+
+		if (rXs != 0.0f) 
+		{
+			float inverseRxS = 1.0f / rXs;
+
+			float t = qpXs * inverseRxS, u = qpXr * inverseRxS;
+
+			if ((t >= 0.0f && t <= 1.0f) && (u >= 0.0f && u <= 1.0f)) 
+			{
+				if (length) 
+				{
+					*length = t;
+				}
+
+            	return true;
+			}
+		} 
+		else
+		{
+			if (qpXr != 0.0f) return false;
+
+			float rDr = Vector2DotProduct(ray1.Direction, ray1.Direction);
+			float sDr = Vector2DotProduct(ray2.Direction, ray1.Direction);
+
+			float inverseRdR = 1.0f / rDr;
+
+			float qpDr = Vector2DotProduct(qp, ray1.Direction);
+
+			float t0 = qpDr * inverseRdR, t1 = t0 + (sDr * inverseRdR);
+
+			if (sDr < 0.0f)
+			{
+				float tmp = t0;
+				
+				t0 = t1, t1 = tmp;
+			}
+
+			if ((t0 < 0.0f && t1 == 0.0f) || (t0 == 1.0f && t1 > 1.0f)) 
+			{
+				if (length) 
+				{
+					*length = (t0 == 1.0f);
+				}
+
+				return true;
+			}
+
+			if (t1 >= 0.0f && t0 <= 1.0f) {
+				// the rays are collinear and overlapping
+				return false;
+			}
+
+			return false;
+		}
+	}
 
 	// intersection using the slab method
 	// https://tavianator.com/2011/ray_box.html#:~:text=The%20fastest%20method%20for%20performing,remains%2C%20it%20intersected%20the%20box.
@@ -81,6 +147,7 @@ extern "C"
 		{
 			*intersection = Vector2Add(ray.Origin, Vector2Scale(ray.Direction, minParam));
 		}
+
 		return true;
 	}
 
@@ -118,7 +185,8 @@ extern "C"
 
 	bool CheckCollisionRay2dPoly(Ray2d ray, Vector2* points, int pointCount, Vector2* intersection) 
 	{
-		if (points == NULL || pointCount < 3) {
+		if (points == NULL || pointCount < 3) 
+		{
 			return false;
 		}
 
@@ -126,68 +194,18 @@ extern "C"
 
 		float distSq = INFINITY;
 
-		for (int j = pointCount - 1, i = 0; i < pointCount; j = i, i++) {
+		for (int j = pointCount - 1, i = 0; i < pointCount; j = i, i++) 
+		{
 			Ray2d edgeRay = { 
 				.Origin = points[i],
 				.Direction = Vector2Subtract(points[j], points[i])
 			};
 
-			float magnitude = -INFINITY;
+			float length = -INFINITY;
 
-			// https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282
-			{
-				float rXs = (ray.Direction.x * edgeRay.Direction.y) - (ray.Direction.y * edgeRay.Direction.x); 
+			bool intersect = CheckCollisionRay2ds(ray, edgeRay, &length);
 
-				Vector2 qp = Vector2Subtract(edgeRay.Origin, ray.Origin);
-
-				float qpXs = (qp.x * edgeRay.Direction.y) - (qp.y * edgeRay.Direction.x);
-				float qpXr = (qp.x * ray.Direction.y) - (qp.y * ray.Direction.x);
-
-				if (rXs != 0.0f) 
-				{
-					float inverseRxS = 1.0f / rXs;
-
-					float t = qpXs * inverseRxS, u = qpXr * inverseRxS;
-
-					if ((t >= 0.0f && t <= 1.0f) && (u >= 0.0f && u <= 1.0f)) 
-					{
-						magnitude = t;
-					}
-				} 
-				else
-				{
-					if (qpXr == 0.0f) 
-					{
-						float rDr = Vector2DotProduct(ray.Direction, ray.Direction);
-        				float sDr = Vector2DotProduct(edgeRay.Direction, ray.Direction);
-
-						float inverseRdR = 1.0f / rDr;
-
-						float qpDr = Vector2DotProduct(qp, ray.Direction);
-
-						float t0 = qpDr * inverseRdR, t1 = t0 + sDr * inverseRdR;
-
-        				if (sDr < 0.0f)
-						{
-							float tmp = t0;
-							
-							t0 = t1, t1 = tmp;
-						}
-
-						if ((t0 < 0.0f && t1 == 0.0f) || (t0 == 1.0f && t1 > 1.0f)) 
-						{
-							magnitude = (t0 == 1.0f) ? 1.0f : 0.0f;
-						}
-					}
-				}
-			}
-
-			if (magnitude < 0.0f) 
-			{
-				continue;
-			}
-
-			Vector2 nearest = Vector2Add(ray.Origin, Vector2Scale(ray.Direction, magnitude));
+			Vector2 nearest = Vector2Add(ray.Origin, Vector2Scale(ray.Direction, length));
 
 			float nearestDistSq = Vector2DistanceSqr(ray.Origin, nearest);
 
