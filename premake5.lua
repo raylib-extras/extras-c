@@ -182,3 +182,20 @@ project "application_dir_sample"
 	includedirs {"path_utils" }
 	
 	link_raylib()
+
+project "transform_2d_sample"
+	kind "ConsoleApp"
+	location "_build"
+	targetdir "_bin/%{cfg.buildcfg}"
+	language "C"
+	
+	vpaths 
+	{
+		["Header Files"] = { "transform_2d/samples/*.h"},
+		["Source Files"] = {"transform_2d/samples/*.c" },
+	}
+	files {"transform_2d/samples/*.c"}
+	
+	includedirs {"transform_2d" }
+	
+	link_raylib()
