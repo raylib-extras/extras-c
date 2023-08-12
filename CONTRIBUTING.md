@@ -11,3 +11,4 @@ Thank you for taking an intrerest in contributing to raylib-extras
 
 # Contributors
 Dor Shapira (sDos280)
+Jaedeok Kim (jdeokkim)
