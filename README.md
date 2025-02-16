@@ -1,5 +1,6 @@
 # extras-c
 <img align="left" src="https://github.com/raysan5/raylib/raw/master/logo/raylib_logo_animation.gif" width="64">
+
 Useful comonents for use the [Raylib](https://www.raylib.com/) library (C language version). 
 
 Note that the C versions of any extra can be used in C++ without issue.
